@@ -64,9 +64,9 @@ gacha_time_4 = 0
 all_raw_pull = 0
 
 least_gacha_time = 0  # 每个池至少的抽卡数量
-ignore_5_star = 0  # 每个池略去前几个五星
-ignore_4_star = 0  # 每个池略去前几个四星
-pure_4_star_model = 1  # 用于分析四星模型，若四星中途抽到五星则跳过
+ignore_5_star = 5  # 每个池略去前几个五星
+ignore_4_star = 20  # 每个池略去前几个四星
+pure_4_star_model = 0  # 设为1时用于分析四星模型，若四星中途抽到五星则跳过
 pool_select = 0  # 零表示不进行指定UP池选择 有数字代表选择某一个池
 temp = 0
 
@@ -86,8 +86,8 @@ for i in tqdm.tqdm(file_list):  # progressBar
         if max(data.index) < least_gacha_time:  # 略去量少数据
             continue
         counter_5 = 0  # 抽取计数器
-        first_5 = 0  # 取消刷初始号偏差,需要略去的前几个出五星数量
-        first_4 = 0
+        first_5 = ignore_5_star  # 取消刷初始号偏差,需要略去的前几个出五星数量
+        first_4 = ignore_4_star
         counter_4 = 0
         been_5 = 0  # 四星中间是否有五星
         for index, row in data.iterrows():
@@ -100,8 +100,8 @@ for i in tqdm.tqdm(file_list):  # progressBar
                     counter_4 = 0
                     been_5 = 0
                     continue
-                if ignore_4_star > 0:  # 消除初始号影响
-                    ignore_4_star -= 1
+                if first_4 > 0:  # 消除初始号影响
+                    first_4 -= 1
                     counter_4 = 0
                     continue
                 # 筛选UP池时发现不是这个池子
@@ -124,13 +124,13 @@ for i in tqdm.tqdm(file_list):  # progressBar
                 counter_4 = 0
                 been_5 = 0
             if this_star == 5:
-                if counter_4 == 10 and (j == 1 or j == 2):
-                    temp += 1
-                    print(data.iloc[index+1].values[1])
-                    print(data.iloc[index+1].values[3])
+                # if counter_4 == 10 and (j == 1 or j == 2):
+                #     temp += 1
+                #     print(data.iloc[index+1].values[1])
+                #     print(data.iloc[index+1].values[3])
                 been_5 = 1
-                if ignore_5_star > 0:  # 消除初始号影响
-                    ignore_5_star -= 1
+                if first_5 > 0:  # 消除初始号影响
+                    first_5 -= 1
                     counter_5 = 0
                     continue
                 if data.iloc[index].values[2] == '武器':  # 试验性
@@ -170,16 +170,18 @@ need_5 = np.sum(np.sum(star_5_distribution[0:91, 1:3, :], axis=2), axis=1)  # �
 # produce_var(5, need_5, 0.016)
 
 print('四星数量: ' + str(need_4.sum()))
-print(temp)
+# print(temp)
+# print(*(need_4[1:12]), sep='\t')
+print('UP四星角色')
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 0:1], axis=2), axis=1)  # 选取标准池和角色池
 print(*(need_4[1:12]), sep='\t')
-# print('UP四星角色')
-# need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 0:1], axis=2), axis=1)  # 选取标准池和角色池
-# print(*(need_4[1:12]), sep='\t')
-# print('其他四星角色')
-# need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 1:2], axis=2), axis=1)  # 选取标准池和角色池
-# print('四星武器')
-# print(*(need_4[1:12]), sep='\t')
-# need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 2:3], axis=2), axis=1)  # 选取标准池和角色池
+print('四星武器')
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 2:3], axis=2), axis=1)  # 选取标准池和角色池
+print(*(need_4[1:12]), sep='\t')
+print('其他四星角色')
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 1:2], axis=2), axis=1)  # 选取标准池和角色池
+print(*(need_4[1:12]), sep='\t')
+
 print('五星数量: ' + str(need_5.sum()))
 print(*(need_5[1:91]), sep='\t')
 

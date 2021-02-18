@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
-M = np.zeros((990, 990),dtype=float)
+M = np.zeros((990, 990), dtype=float)
 # 状态定义state[i * 90 + j] (i, j>0时)i表示抽了i抽没有五星，j表示抽了j抽没有四星
 # 当i == 0时，表示刚好抽到五星 j == 0时，表示刚好抽到四星
 # 使用概率转移矩阵计算 M[m, n]中m表示转移到的状态，n表示转移前的状态
