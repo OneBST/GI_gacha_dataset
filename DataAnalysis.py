@@ -64,15 +64,17 @@ gacha_time_4 = 0
 all_raw_pull = 0
 
 least_gacha_time = 0  # 每个池至少的抽卡数量
-ignore_5_star = 5  # 每个池略去前几个五星
-ignore_4_star = 20  # 每个池略去前几个四星
+ignore_5_star = 0  # 每个池略去前几个五星
+ignore_4_star = 0  # 每个池略去前几个四星
 pure_4_star_model = 0  # 设为1时用于分析四星模型，若四星中途抽到五星则跳过
 pool_select = 0  # 零表示不进行指定UP池选择 有数字代表选择某一个池
 temp = 0
+star_4_check = 0
 
 for i in tqdm.tqdm(file_list):  # progressBar
     folder_paths = [base_folder, i]
     folder_path = osp.join(*folder_paths)
+    star_4_check = 0
     for j in range(4):  # 四个池子
         file_name = file_names[j]
         processing_file = osp.join(base_folder, str(i).rjust(4, '0'), file_name)
@@ -108,12 +110,17 @@ for i in tqdm.tqdm(file_list):  # progressBar
                 if pool_select and (wish_filter(0, data.iloc[index].values[0], pool_select, 'NULL') == 0):
                     counter_4 = 0
                     continue
+
                 if counter_4 >= 12:  # 极低概率事件
                     print(i)
                     print('四星间隔超出12，需要检查')
                 if data.iloc[index].values[2] == '武器':
+                    if j == 1 or j == 2:
+                        star_4_check += 1
                     star_4_distribution[counter_4][j][2] += 1
                 if data.iloc[index].values[2] == '角色':
+                    if j == 1 or j == 2:
+                        star_4_check += 1
                     if wish_filter(1, data.iloc[index].values[0], 0, data.iloc[index].values[1]):
                         # 是UP角色
                         star_4_distribution[counter_4][j][0] += 1
@@ -142,6 +149,8 @@ for i in tqdm.tqdm(file_list):  # progressBar
                     star_5_distribution[counter_5][j][1] += 1
                 gacha_time_5 += counter_5
                 counter_5 = 0
+    if star_4_check == 0:
+        print(folder_path)
 
 
 def produce_var(star, gacha_data, check_p):
@@ -170,6 +179,7 @@ need_5 = np.sum(np.sum(star_5_distribution[0:91, 1:3, :], axis=2), axis=1)  # �
 # produce_var(5, need_5, 0.016)
 
 print('四星数量: ' + str(need_4.sum()))
+print(star_4_check)
 # print(temp)
 # print(*(need_4[1:12]), sep='\t')
 print('UP四星角色')
