@@ -62,6 +62,7 @@ default_header = ['抽卡时间', '编号', '名称', '类别', '星级']
 gacha_time_5 = 0
 gacha_time_4 = 0
 all_raw_pull = 0
+max_5_star_pull = 0
 
 least_gacha_time = 0  # 每个池至少的抽卡数量
 ignore_5_star = 0  # 每个池略去前几个五星
@@ -136,6 +137,7 @@ for i in tqdm.tqdm(file_list):  # progressBar
                 #     temp += 1
                 #     print(data.iloc[index+1].values[1])
                 #     print(data.iloc[index+1].values[3])
+                max_5_star_pull = max(max_5_star_pull, counter_5)
                 been_5 = 1
                 if first_5 > 0:  # 消除初始号影响
                     first_5 -= 1
@@ -199,6 +201,7 @@ print(*(need_4[1:12]), sep='\t')
 
 print('五星数量: ' + str(need_5.sum()))
 print(*(need_5[1:91]), sep='\t')
+print('抽到五星所用的最多抽数：'+str(max_5_star_pull))
 
 
 def plot_5_star_compare_graph(x):
