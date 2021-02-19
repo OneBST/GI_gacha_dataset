@@ -68,13 +68,12 @@ ignore_5_star = 0  # 每个池略去前几个五星
 ignore_4_star = 0  # 每个池略去前几个四星
 pure_4_star_model = 0  # 设为1时用于分析四星模型，若四星中途抽到五星则跳过
 pool_select = 0  # 零表示不进行指定UP池选择 有数字代表选择某一个池
+pool_list = [5, 6, 7, 8, ]  # 选择的UP池
 temp = 0
-star_4_check = 0
 
 for i in tqdm.tqdm(file_list):  # progressBar
     folder_paths = [base_folder, i]
     folder_path = osp.join(*folder_paths)
-    star_4_check = 0
     for j in range(4):  # 四个池子
         file_name = file_names[j]
         processing_file = osp.join(base_folder, str(i).rjust(4, '0'), file_name)
@@ -107,21 +106,23 @@ for i in tqdm.tqdm(file_list):  # progressBar
                     counter_4 = 0
                     continue
                 # 筛选UP池时发现不是这个池子
-                if pool_select and (wish_filter(0, data.iloc[index].values[0], pool_select, 'NULL') == 0):
-                    counter_4 = 0
-                    continue
-
+                if pool_select:  # 开启了UP池筛选
+                    check_select_mark = 0
+                    for pool_num in pool_list:
+                        if wish_filter(0, data.iloc[index].values[0], pool_num, 'NULL'):
+                            check_select_mark = 1
+                    if check_select_mark == 0:
+                        counter_4 = 0
+                        continue
                 if counter_4 >= 12:  # 极低概率事件
                     print(i)
                     print('四星间隔超出12，需要检查')
                 if data.iloc[index].values[2] == '武器':
-                    if j == 1 or j == 2:
-                        star_4_check += 1
                     star_4_distribution[counter_4][j][2] += 1
                 if data.iloc[index].values[2] == '角色':
-                    if j == 1 or j == 2:
-                        star_4_check += 1
-                    if wish_filter(1, data.iloc[index].values[0], 0, data.iloc[index].values[1]):
+                    if j == 1:  # 常驻池
+                        star_4_distribution[counter_4][j][1] += 1
+                    elif wish_filter(1, data.iloc[index].values[0], 0, data.iloc[index].values[1]):
                         # 是UP角色
                         star_4_distribution[counter_4][j][0] += 1
                     else:  # 非UP四星角色
@@ -149,8 +150,6 @@ for i in tqdm.tqdm(file_list):  # progressBar
                     star_5_distribution[counter_5][j][1] += 1
                 gacha_time_5 += counter_5
                 counter_5 = 0
-    if star_4_check == 0:
-        print(folder_path)
 
 
 def produce_var(star, gacha_data, check_p):
@@ -168,28 +167,34 @@ def produce_var(star, gacha_data, check_p):
     print('样本均值' + str(data_mean))
     print('样本平均概率' + str(1 / data_mean))
     print('样本方差' + str(s_2))
-    print('等效01正态的参考值' + str(stander_check))
+    print('转为01正态的参考值' + str(stander_check))  # 假设检验量，此方法数学上不严格，仅供参考
 
 
 print('原始数据统计总抽数：' + str(all_raw_pull))
 need_4 = np.sum(np.sum(star_4_distribution[0:12, 1:3, :], axis=2), axis=1)  # 选取标准池和角色池
 need_5 = np.sum(np.sum(star_5_distribution[0:91, 1:3, :], axis=2), axis=1)  # 选取标准池和角色池
 # 统计量分析
-# produce_var(4, need_4, 0.13)
-# produce_var(5, need_5, 0.016)
+produce_var(4, need_4, 0.13)
+produce_var(5, need_5, 0.016)
 
 print('四星数量: ' + str(need_4.sum()))
-print(star_4_check)
 # print(temp)
 # print(*(need_4[1:12]), sep='\t')
 print('UP四星角色')
-need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 0:1], axis=2), axis=1)  # 选取标准池和角色池
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 0:1], axis=2), axis=1)  # 选取角色池
 print(*(need_4[1:12]), sep='\t')
 print('四星武器')
-need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 2:3], axis=2), axis=1)  # 选取标准池和角色池
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 2:3], axis=2), axis=1)  # 选取角色池
 print(*(need_4[1:12]), sep='\t')
 print('其他四星角色')
-need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 1:2], axis=2), axis=1)  # 选取标准池和角色池
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 1:2], axis=2), axis=1)  # 选取角色池
+print(*(need_4[1:12]), sep='\t')
+
+print('常驻四星角色')
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 1:2, 1:2], axis=2), axis=1)  # 选取标准池
+print(*(need_4[1:12]), sep='\t')
+print('常驻四星武器')
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 1:2, 2:3], axis=2), axis=1)  # 选取标准池
 print(*(need_4[1:12]), sep='\t')
 
 print('五星数量: ' + str(need_5.sum()))
@@ -213,4 +218,4 @@ def plot_5_star_compare_graph(x):
     plt.show()
 
 
-plot_5_star_compare_graph(need_5)
+# plot_5_star_compare_graph(need_5)
