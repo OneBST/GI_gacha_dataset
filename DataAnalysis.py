@@ -213,9 +213,14 @@ def plot_5_star_compare_graph(x):
             P_5[i] = 1
         Expect_distribution_5[i] = state_P * P_5[i]
         state_P = state_P * (1 - P_5[i])  # 下个状态的概率
-    plt.plot(range(1, 91), Expect_distribution_5[1:91])
-    plt.plot(range(1, 91), x[1:91] / sum(x[1:91]))
+    plt.plot(range(1, 91), Expect_distribution_5[1:91], label='my theory')
+    plt.plot(range(1, 91), x[1:91] / sum(x[1:91]), label='actual situation in dataset_02')
+    plt.title('5 star distribution')
+    plt.legend(loc="upper left")
+    plt.savefig('plot_graph\\5star_distribution.png')
     plt.show()
 
 
-# plot_5_star_compare_graph(need_5)
+
+
+plot_5_star_compare_graph(need_5)
