@@ -1,7 +1,3 @@
----
-typora-root-url: plot_graph
----
-
 # Readme
 
 **持续收集原神抽卡记录中**
@@ -88,4 +84,5 @@ DistributionMatrix.py用于在四星五星耦合的情况下分析设计模型�
 
 运行DataAnalysis.py会自动生成下图
 
-![](https://github.com/OneBST/GI_gacha_dataset/blob/main/plot_graph/5star_distribution.png)
+![](https://github.com/OneBST/GI_gacha_dataset/raw/main/plot_graph/5star_distribution.png)
+
