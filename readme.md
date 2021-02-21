@@ -1,3 +1,7 @@
+---
+typora-root-url: plot_graph
+---
+
 # Readme
 
 **持续收集原神抽卡记录中**
@@ -6,15 +10,15 @@
 
 [抽卡记录导出工具](https://github.com/sunfkny/genshin-gacha-export) from sunfkny [使用方法演示视频](https://www.bilibili.com/video/BV1tr4y1K7Ea/)
 
-**数据集近期不更新警告**
+[另一种导出工具](https://github.com/biuuu/genshin-gacha-export/releases) from lvlvl
 
-网友们发送抽卡记录的热情很高，现在各类抽卡记录导出工具也多了起来，结果就是我收到了五花八门的json文件，看得我很懵，又要做很多事情了。
+**注意**
 
-打算学习一下面向对象的技巧一劳永逸的解决这个问题（万一以后再来新的json格式我就炸了）
+网友们发送抽卡记录的热情很高，现在各类抽卡记录导出工具也多了起来，结果就是我收到了五花八门的json文件。
 
-届时将设置dataset_03，文件夹名为以玩家UID加盐后的hash值，实现不同json文件的兼容并自动追加同账号的新增记录
+目前支持sunfkny的工具导出的json格式，其他工具的json格式要过段时间兼容，其他工具导出的数据更新会在之后。
 
-目前数据集中有7w+抽卡记录，够用一阵子了
+目前数据集中有82081条抽卡记录，够用一阵子了
 
 
 
@@ -84,4 +88,4 @@ DistributionMatrix.py用于在四星五星耦合的情况下分析设计模型�
 
 运行DataAnalysis.py会自动生成下图
 
-![5star_distribution](D:\FileCollection\2021\2021-02\2021-02-08-第二批抽卡数据处理\GI_gacha_dataset\plot_graph\5star_distribution.png)
+![5star_distribution](/5star_distribution.png)
