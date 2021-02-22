@@ -64,12 +64,12 @@ gacha_time_4 = 0
 all_raw_pull = 0
 max_5_star_pull = 0
 
-least_gacha_time = 0  # 每个池至少的抽卡数量
-ignore_5_star = 0  # 每个池略去前几个五星
-ignore_4_star = 0  # 每个池略去前几个四星
+least_gacha_time = 1000  # 每个池至少的抽卡数量
+ignore_5_star = 3  # 每个池略去前几个五星
+ignore_4_star = 10  # 每个池略去前几个四星
 pure_4_star_model = 0  # 设为1时用于分析四星模型，若四星中途抽到五星则跳过
 pool_select = 0  # 零表示不进行指定UP池选择 有数字代表选择某一个池
-pool_list = [5, 6, 7, 8, ]  # 选择的UP池
+pool_list = [1, ]  # 选择的UP池
 temp = 0
 
 for i in tqdm.tqdm(file_list):  # progressBar
@@ -179,51 +179,68 @@ need_5 = np.sum(np.sum(star_5_distribution[0:91, 1:3, :], axis=2), axis=1)  # �
 produce_var(4, need_4, 0.13)
 produce_var(5, need_5, 0.016)
 
-print('四星数量: ' + str(need_4.sum()))
-# print(temp)
+# print('四星数量: ' + str(need_4.sum()))
+# # print(temp)
+# # print(*(need_4[1:12]), sep='\t')
+# print('UP四星角色')
+# need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 0:1], axis=2), axis=1)  # 选取角色池
 # print(*(need_4[1:12]), sep='\t')
-print('UP四星角色')
-need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 0:1], axis=2), axis=1)  # 选取角色池
-print(*(need_4[1:12]), sep='\t')
-print('四星武器')
-need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 2:3], axis=2), axis=1)  # 选取角色池
-print(*(need_4[1:12]), sep='\t')
-print('其他四星角色')
-need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 1:2], axis=2), axis=1)  # 选取角色池
-print(*(need_4[1:12]), sep='\t')
-
-print('常驻四星角色')
-need_4 = np.sum(np.sum(star_4_distribution[0:12, 1:2, 1:2], axis=2), axis=1)  # 选取标准池
-print(*(need_4[1:12]), sep='\t')
-print('常驻四星武器')
-need_4 = np.sum(np.sum(star_4_distribution[0:12, 1:2, 2:3], axis=2), axis=1)  # 选取标准池
-print(*(need_4[1:12]), sep='\t')
-
-print('五星数量: ' + str(need_5.sum()))
-print(*(need_5[1:91]), sep='\t')
-print('抽到五星所用的最多抽数：'+str(max_5_star_pull))
+# print('四星武器')
+# need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 2:3], axis=2), axis=1)  # 选取角色池
+# print(*(need_4[1:12]), sep='\t')
+# print('其他四星角色')
+# need_4 = np.sum(np.sum(star_4_distribution[0:12, 2:3, 1:2], axis=2), axis=1)  # 选取角色池
+# print(*(need_4[1:12]), sep='\t')
+#
+# print('常驻四星角色')
+# need_4 = np.sum(np.sum(star_4_distribution[0:12, 1:2, 1:2], axis=2), axis=1)  # 选取标准池
+# print(*(need_4[1:12]), sep='\t')
+# print('常驻四星武器')
+# need_4 = np.sum(np.sum(star_4_distribution[0:12, 1:2, 2:3], axis=2), axis=1)  # 选取标准池
+# print(*(need_4[1:12]), sep='\t')
+#
+# print('五星数量: ' + str(need_5.sum()))
+# print(*(need_5[1:91]), sep='\t')
+# print('抽到五星所用的最多抽数：'+str(max_5_star_pull))
 
 
-def plot_5_star_compare_graph(x):
+def plot_5_star_compare_graph(x, weapon_pool):
     P_5 = np.zeros(91, dtype=float)
     Expect_distribution_5 = np.zeros(91, dtype=float)
     state_P = 1
-    for i in range(1, 91):  # 专栏模型
-        P_5[i] = 0.006  # 前73发概率
-        if i > 73:  # 概率增长段
-            P_5[i] = 0.006 + 0.053 * (i - 73)
-        if i == 90:  # 90发保底
+    expect_pull_time = 0  # 期望抽卡数
+    base_P = 0.006  # 基础概率
+    pity_begin = 74  # 保底开始位置
+    guarantee_pull = 90  # 一定能抽到
+    file_text = 'stander&character'
+    if weapon_pool:  # 武器池的话
+        base_P = 0.007
+        pity_begin = 63
+        guarantee_pull = 80
+        file_text = 'weapon'
+    for i in range(1, 91):  # 根据二测数据的修正模型
+        P_5[i] = base_P  # 保底前概率
+        if i >= pity_begin:  # 概率增长段
+            P_5[i] = base_P + base_P*10 * (i - pity_begin + 1)
+        if i == guarantee_pull:  # 硬保底
             P_5[i] = 1
         Expect_distribution_5[i] = state_P * P_5[i]
+        expect_pull_time += Expect_distribution_5[i]*i
         state_P = state_P * (1 - P_5[i])  # 下个状态的概率
-    plt.plot(range(1, 91), Expect_distribution_5[1:91], label='my theory')
-    plt.plot(range(1, 91), x[1:91] / sum(x[1:91]), label='actual situation in dataset_02')
-    plt.title('5 star distribution')
+    plt.plot(range(1, guarantee_pull+1), Expect_distribution_5[1:guarantee_pull+1], label='my theory')
+    plt.plot(range(1, guarantee_pull+1), x[1:guarantee_pull+1] / sum(x[1:guarantee_pull+1]), label='actual situation in dataset_02')
+    plt.title(file_text+' 5 star distribution')
     plt.legend(loc="upper left")
-    plt.savefig('plot_graph\\5star_distribution.png')
+    plt.text(15, 0.06, '5star sample number:' + str(sum(x[1:guarantee_pull+1]))+'\n'+
+             'theory probability:'+str(round(100/expect_pull_time, 4))+'%',
+             verticalalignment="top", horizontalalignment="left")  #
+    plt.savefig('plot_graph\\5star_distribution_'+file_text+'.png')
     plt.show()
 
 
-
-
-plot_5_star_compare_graph(need_5)
+# 绘制五星分布
+need_5 = np.sum(np.sum(star_5_distribution[0:91, 1:3, :], axis=2), axis=1)  # 选取标准池和角色池
+plot_5_star_compare_graph(need_5, 0)  # 标准池和角色池
+need_5 = np.sum(np.sum(star_5_distribution[0:91, 3:4, :], axis=2), axis=1)  # 选取武器池
+# print('武器池五星数量'+str(need_5.sum()))
+plot_5_star_compare_graph(need_5, 1)  # 武器池

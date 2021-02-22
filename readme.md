@@ -74,15 +74,7 @@ csv文件内数据记录格式如下
 
 ## 分析工具说明
 
-DataAnalysis.py用于分析csv抽卡文件，这段代码还在重写中，会非常的难用，仅供参考
+DataAnalysis.py用于分析csv抽卡文件，这段代码还在重写中，**会非常的难用，仅供参考**
 
 DistributionMatrix.py用于在四星五星耦合的情况下分析设计模型的抽卡概率和分布，是计算抽卡模型的综合概率与期望的大杀器
-
-
-
-## 数据集内收集到的五星分布情况
-
-运行DataAnalysis.py会自动生成下图
-
-![](https://github.com/OneBST/GI_gacha_dataset/blob/main/plot_graph/5star_distribution.png?raw=true)
 
