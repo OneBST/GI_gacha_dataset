@@ -179,6 +179,7 @@ need_5 = np.sum(np.sum(star_5_distribution[0:91, 1:3, :], axis=2), axis=1)  # �
 produce_var(4, need_4, 0.13)
 produce_var(5, need_5, 0.016)
 
+# 这部分是我分析四星时随意写的，之后会改这些乱七八糟的玩意
 # print('四星数量: ' + str(need_4.sum()))
 # # print(temp)
 # # print(*(need_4[1:12]), sep='\t')
