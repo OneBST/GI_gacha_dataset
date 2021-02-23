@@ -228,8 +228,7 @@ def plot_5_star_compare_graph(x, weapon_pool):
         Expect_distribution_5[i] = state_P * P_5[i]
         expect_pull_time += Expect_distribution_5[i]*i
         state_P = state_P * (1 - P_5[i])  # 下个状态的概率
-
-    tot = 0
+    tot = 0  # 此处用于计算样本概率的无偏估计量
     for k in range(1, len(x)):
         tot += k * x[k]
     data_mean = tot / sum(x)
