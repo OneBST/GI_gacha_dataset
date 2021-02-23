@@ -6,7 +6,7 @@
 
 [一种抽卡记录导出工具](https://github.com/sunfkny/genshin-gacha-export) from sunfkny [使用方法演示视频](https://www.bilibili.com/video/BV1tr4y1K7Ea/)
 
-[另一种导出工具](https://github.com/biuuu/genshin-gacha-export/releases) from lvlvl
+[另一种electron版的抽卡记录导出工具](https://github.com/biuuu/genshin-gacha-export/releases) from lvlvl
 
 目前数据集中有117214条抽卡记录
 
