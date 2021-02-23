@@ -1,26 +1,20 @@
-# Readme
+# 提要
 
 **持续收集原神抽卡记录中**
 
-可以使用抽卡记录导出工具导出抽卡记录的json，将json文件发送至**onebst@foxmail.com**，我会在清除个人信息后将文件提交到此处
+可以使用抽卡记录导出工具导出抽卡记录的json，将json文件发送至**onebst@foxmail.com**，我会在清除个人信息后将文件提交到此处。以下两种导出工具任选其一即可。
 
-[抽卡记录导出工具](https://github.com/sunfkny/genshin-gacha-export) from sunfkny [使用方法演示视频](https://www.bilibili.com/video/BV1tr4y1K7Ea/)
+[一种抽卡记录导出工具](https://github.com/sunfkny/genshin-gacha-export) from sunfkny [使用方法演示视频](https://www.bilibili.com/video/BV1tr4y1K7Ea/)
 
 [另一种导出工具](https://github.com/biuuu/genshin-gacha-export/releases) from lvlvl
 
-**注意**
-
-网友们发送抽卡记录的热情很高，现在各类抽卡记录导出工具也多了起来，结果就是我收到了五花八门的json文件。
-
-目前支持sunfkny的工具导出的json格式，其他工具的json格式要过段时间兼容，其他工具导出的数据更新会在之后。
-
-目前数据集中有82081条抽卡记录，够用一阵子了
+目前数据集中有117214条抽卡记录
 
 
 
 ## 数据格式说明
 
-dataset文件夹中文件从0001开始顺序编号
+dataset_02文件夹中文件从0001开始顺序编号
 
 每个文件夹内包含一个账号的抽卡记录
 
@@ -74,7 +68,7 @@ csv文件内数据记录格式如下
 
 ## 分析工具说明
 
-DataAnalysis.py用于分析csv抽卡文件，这段代码还在重写中，**会非常的难用，仅供参考**
+DataAnalysis.py用于分析csv抽卡文件，这段代码还在重写中，**会非常的难用，仅供参考**，运行后会输出参考统计量并画出分布图
 
 DistributionMatrix.py用于在四星五星耦合的情况下分析设计模型的抽卡概率和分布，是计算抽卡模型的综合概率与期望的大杀器
 

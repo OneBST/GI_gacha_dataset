@@ -64,9 +64,9 @@ gacha_time_4 = 0
 all_raw_pull = 0
 max_5_star_pull = 0
 
-least_gacha_time = 1000  # 每个池至少的抽卡数量
-ignore_5_star = 3  # 每个池略去前几个五星
-ignore_4_star = 10  # 每个池略去前几个四星
+least_gacha_time = 0  # 每个池至少的抽卡数量
+ignore_5_star = 0  # 每个池略去前几个五星
+ignore_4_star = 0  # 每个池略去前几个四星
 pure_4_star_model = 0  # 设为1时用于分析四星模型，若四星中途抽到五星则跳过
 pool_select = 0  # 零表示不进行指定UP池选择 有数字代表选择某一个池
 pool_list = [1, ]  # 选择的UP池
@@ -227,12 +227,18 @@ def plot_5_star_compare_graph(x, weapon_pool):
         Expect_distribution_5[i] = state_P * P_5[i]
         expect_pull_time += Expect_distribution_5[i]*i
         state_P = state_P * (1 - P_5[i])  # 下个状态的概率
-    plt.plot(range(1, guarantee_pull+1), Expect_distribution_5[1:guarantee_pull+1], label='my theory')
+
+    tot = 0
+    for k in range(1, len(x)):
+        tot += k * x[k]
+    data_mean = tot / sum(x)
+    plt.plot(range(1, guarantee_pull+1), Expect_distribution_5[1:guarantee_pull+1], label='theory')
     plt.plot(range(1, guarantee_pull+1), x[1:guarantee_pull+1] / sum(x[1:guarantee_pull+1]), label='actual situation in dataset_02')
     plt.title(file_text+' 5 star distribution')
     plt.legend(loc="upper left")
-    plt.text(15, 0.06, '5star sample number:' + str(sum(x[1:guarantee_pull+1]))+'\n'+
-             'theory probability:'+str(round(100/expect_pull_time, 4))+'%',
+    plt.text(15, 0.06, '5star sample number:' + str(sum(x[1:guarantee_pull+1])) + '\n' +
+             'theory probability:'+str(round(100/expect_pull_time, 4))+'%' + '\n' +
+             'sample probability:'+str(round(100/data_mean, 4))+'%',
              verticalalignment="top", horizontalalignment="left")  #
     plt.savefig('plot_graph\\5star_distribution_'+file_text+'.png')
     plt.show()
