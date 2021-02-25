@@ -1,1 +1,0 @@
-$  git filter-branch --force --index-filter 'git rm --cached -r --ignore-unmatch GI_gacha_dataset_02/0084' --prune-empty --tag-name-filter cat -- --all
