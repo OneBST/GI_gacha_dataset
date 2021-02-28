@@ -204,7 +204,7 @@ def produce_var(star, gacha_data, check_p):
 print('原始数据统计总抽数：' + str(all_raw_pull))
 need_4 = np.sum(np.sum(star_4_distribution[0:12, 3:4, :], axis=2), axis=1)  # 选取武器池
 need_5 = np.sum(np.sum(star_5_distribution[0:91, 3:4, :], axis=2), axis=1)  # 选取武器池
-
+print(*(need_5[1:81]), sep='\t')
 
 # 统计量分析
 # produce_var(4, need_4, 0.145)
