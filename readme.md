@@ -8,7 +8,7 @@
 
 [另一种electron版的抽卡记录导出工具](https://github.com/biuuu/genshin-gacha-export/releases) from lvlvl
 
-目前数据集中有144890条抽卡记录
+目前数据集中有161011条抽卡记录
 
 
 
