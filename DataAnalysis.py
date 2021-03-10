@@ -244,7 +244,7 @@ def plot_5_star_compare_graph(x, weapon_pool):
     guarantee_pull = 90  # 一定能抽到
     file_text = 'stander&character'
     max_pull = 0
-    if weapon_pool:  # 武器池的话
+    if weapon_pool:  # 武器池的话 这里用的是一段模型，差距不大画图够用就还没改
         base_P = 0.007
         pity_begin = 63
         guarantee_pull = 80
