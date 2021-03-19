@@ -81,7 +81,7 @@ gacha_time_4 = 0
 all_raw_pull = 0
 max_5_star_pull = 0
 
-least_gacha_time = 0  # 每个池至少的抽卡数量
+least_gacha_time = 500  # 每个池至少的抽卡数量
 ignore_5_star = 0  # 每个池略去前几个五星
 ignore_4_star = 0  # 每个池略去前几个四星
 pure_4_star_model = 0  # 设为1时用于分析四星模型，若四星中途抽到五星则跳过
@@ -204,23 +204,24 @@ def produce_var(star, gacha_data, check_p):
 print('原始数据统计总抽数：' + str(all_raw_pull))
 need_4 = np.sum(np.sum(star_4_distribution[0:12, 3:4, :], axis=2), axis=1)  # 选取武器池
 need_5 = np.sum(np.sum(star_5_distribution[0:91, 3:4, :], axis=2), axis=1)  # 选取武器池
-print(*(need_5[1:81]), sep='\t')
+# print(*(need_5[1:81]), sep='\t')
 
 # 统计量分析
 # produce_var(4, need_4, 0.145)
 
 # 这部分是我分析四星时随意写的，之后会改这些乱七八糟的玩意
-# print('四星数量: ' + str(need_4.sum()))
-# print(*(need_4[1:12]), sep='\t')
-# print('UP四星武器')
-# need_4 = np.sum(np.sum(star_4_distribution[0:12, 3:4, 0:1], axis=2), axis=1)
-# print(*(need_4[1:12]), sep='\t')
-# print('四星角色')
-# need_4 = np.sum(np.sum(star_4_distribution[0:12, 3:4, 2:3], axis=2), axis=1)
-# print(*(need_4[1:12]), sep='\t')
-# print('其他四星武器')
-# need_4 = np.sum(np.sum(star_4_distribution[0:12, 3:4, 1:2], axis=2), axis=1)
-# print(*(need_4[1:12]), sep='\t')
+print('四星数量: ' + str(need_4.sum()))
+print(*(need_4[1:12]), sep='\t')
+print('UP四星武器')
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 3:4, 0:1], axis=2), axis=1)
+print(*(need_4[1:12]), sep='\t')
+print(sum(need_4[1:12]), sep='\t')
+print('四星角色')
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 3:4, 2:3], axis=2), axis=1)
+print(*(need_4[1:12]), sep='\t')
+print('其他四星武器')
+need_4 = np.sum(np.sum(star_4_distribution[0:12, 3:4, 1:2], axis=2), axis=1)
+print(*(need_4[1:12]), sep='\t')
 
 
 def plot_5_star_compare_graph(x, weapon_pool):
@@ -243,7 +244,7 @@ def plot_5_star_compare_graph(x, weapon_pool):
         Expect_distribution_5[i] = state_P * P_5[i]
         state_P = state_P * (1 - P_5[i])  # 下个状态的概率
         expect_pull_time += Expect_distribution_5[i] * i
-    print(*(P_5[60:81]), sep='\t')
+    # print(*(P_5[60:81]), sep='\t')
     tot = 0  # 此处用于计算样本概率的无偏估计量
     for k in range(1, len(x)):
         tot += k * x[k]

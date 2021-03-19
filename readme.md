@@ -8,7 +8,7 @@
 
 [另一种electron版的抽卡记录导出工具](https://github.com/biuuu/genshin-gacha-export/releases) from lvlvl
 
-目前数据集中有180933条抽卡记录
+目前数据集中有188073条抽卡记录
 
 
 
@@ -22,9 +22,13 @@
 
 建立模型时你可以参考我建立的抽卡模型：
 
-[常驻池和角色池的五星机制](https://www.bilibili.com/read/cv8772558)（概率递增值可以改为0.06）
+[常驻池和角色池的五星机制](https://www.bilibili.com/read/cv8772558)（概率递增值可以改为0.06，常驻池还有一点小机制还在研究）
 
 [常驻池和角色池的四星机制](https://www.bilibili.com/read/cv9896487)（第9抽的概率可以改为0.51+0.051）
+
+[武器池的抽取机制](https://www.bilibili.com/read/cv10003529) （尚未研究清楚）
+
+[分析抽卡机制的一些工具](https://www.bilibili.com/read/cv10152872)
 
 
 

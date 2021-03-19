@@ -71,15 +71,21 @@ ignore_4_star = 0  # 每个池略去前几个四星
 pure_4_star_model = 0  # 设为1时用于分析四星模型，若四星中途抽到五星则跳过
 pool_select = 0  # 零表示不进行指定UP池选择 有数字代表选择某一个池
 pool_list = [1, ]  # 选择的UP池
-
+ch_check =  np.zeros(91, dtype=int)
+we_check =  np.zeros(91, dtype=int)
+temp_c = 0
+temp_w = 0
+max_gap = 0
+mem_pos = 0
+mem_index = 0
 for i in tqdm.tqdm(file_list):  # progressBar
     folder_paths = [base_folder, i]
     folder_path = osp.join(*folder_paths)
     for j in range(4):  # 四个池子
         # if j != 1:  # 研究常驻池
         #     continue
-        # if j != 2:  # 研究角色池
-        #     continue
+        if j != 2:  # 研究角色池
+            continue
         file_name = file_names[j]
         processing_file = osp.join(base_folder, str(i).rjust(4, '0'), file_name)
         if os.path.exists(processing_file):
@@ -96,7 +102,16 @@ for i in tqdm.tqdm(file_list):  # progressBar
         first_4 = ignore_4_star
         counter_4 = 0
         been_5 = 0  # 四星中间是否有五星
+
+        temp_w = 0
+        temp_c = 0
+
+        last_index = 0
+
+
         for index, row in data.iterrows():
+            if (data.iloc[index].values[2] != '武器') & (data.iloc[index].values[2] != '角色'):
+                print(processing_file)
             all_raw_pull += 1
             counter_4 += 1
             counter_5 += 1
@@ -123,20 +138,34 @@ for i in tqdm.tqdm(file_list):  # progressBar
                     print(i)
                     print('四星间隔超出12，需要检查')
                 if data.iloc[index].values[2] == '武器':
+                    temp_w += 1
+                    we_check[temp_c] +=1
+                    temp_c = 0
+
                     star_4_distribution[counter_4][j][2] += 1
                 if data.iloc[index].values[2] == '角色':
+                    temp_c += 1
+                    # ch_check[temp_w] += 1
+                    # temp_w += 1
+
                     if j == 1:  # 常驻池
                         star_4_distribution[counter_4][j][1] += 1
                     elif wish_filter(1, data.iloc[index].values[0], 0, data.iloc[index].values[1]):
                         # 是UP角色
                         star_4_distribution[counter_4][j][0] += 1
                     else:  # 非UP四星角色
+                        ch_check[temp_w] += 1
+                        temp_w = 0
                         star_4_distribution[counter_4][j][1] += 1
 
                 gacha_time_4 += counter_4  # 记录本次所用抽数
                 counter_4 = 0
                 been_5 = 0
             if this_star == 5:
+                # if counter_4 == 10 and (j == 1 or j == 2):
+                #     temp += 1
+                #     print(data.iloc[index+1].values[1])
+                #     print(data.iloc[index+1].values[3])
                 max_5_star_pull = max(max_5_star_pull, counter_5)
                 been_5 = 1
                 if first_5 > 0:  # 消除初始号影响
@@ -144,11 +173,36 @@ for i in tqdm.tqdm(file_list):  # progressBar
                     counter_5 = 0
                     continue
                 if data.iloc[index].values[2] == '武器':  # 试验性
+                    # if index-last_index > max_gap :
+                    #     max_gap = max(max_gap, index-last_index)
+                    #     mem_pos = processing_file
+                    #     mem_index = index
+                    # print(index)
+                    # print(last_index)
+                    # print("****")
+                    # last_index = index
+
+                    # if temp_c >= 4 :
+                    #     print(processing_file)
+                    # temp_w += 1
+                    # we_check[temp_c] += 1
+                    # temp_c = 0
+
                     star_5_distribution[counter_5][j][1] += 1
                 elif wish_filter(1, data.iloc[index].values[0], 0, data.iloc[index].values[1]):
+                    # if index - last_index >= 180:
+                    #     print("????")
+                    # temp_c += 1
+                    # ch_check[temp_w] += 1
+                    # temp_w = 0
                     # 是UP角色
                     star_5_distribution[counter_5][j][0] += 1
                 else:
+                    # if index - last_index >= 180:
+                    #     print("????")
+                    # temp_c += 1
+                    # ch_check[temp_w] += 1
+                    # temp_w = 0
                     star_5_distribution[counter_5][j][1] += 1
                 gacha_time_5 += counter_5
                 counter_5 = 0
@@ -258,3 +312,10 @@ need_5 = np.sum(np.sum(star_5_distribution[0:91, 3:4, :], axis=2), axis=1)  # �
 # print('武器池五星数量'+str(need_5.sum()))
 # print(*(need_5[1:81]), sep='\t')
 plot_5_star_compare_graph(need_5, 1)  # 武器池
+
+
+print(ch_check[0:10])
+print(we_check[0:10])
+print(max_gap)
+print(mem_pos)
+print(mem_index)
