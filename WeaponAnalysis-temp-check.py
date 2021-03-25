@@ -20,7 +20,8 @@ def weapon_filter(up_only, time, pool_number, name):  # 筛选武器活动祈愿
                    '2020-12-22 18:00:00',
                    '2021-01-12 18:00:00',
                    '2021-02-02 18:00:00',
-                   '2021-02-23 18:00:00']
+                   '2021-02-23 18:00:00',
+                   '2021-03-17 00:00:00']
     end_times = ['2020-10-18 17:59:59',
                  '2020-11-09 17:59:59',
                  '2020-12-01 15:59:59',
@@ -28,7 +29,8 @@ def weapon_filter(up_only, time, pool_number, name):  # 筛选武器活动祈愿
                  '2021-01-12 15:59:59',
                  '2021-02-02 14:59:59',
                  '2021-02-23 15:59:59',
-                 '2021-03-16 14:59:59']
+                 '2021-03-16 14:59:59',
+                 '2021-04-06 15:59:59']
     up_characters = [['风鹰剑', '阿莫斯之弓', '笛剑', '钟剑', '流浪乐章', '绝弦', '西风长枪'],
                      ['四风原典', '狼的末路', '祭礼剑', '祭礼大剑', '祭礼残章', '祭礼弓', '匣里灭辰'],
                      ['天空之翼', '尘世之锁', '笛剑', '雨裁', '昭心', '弓藏', '西风长枪'],
@@ -36,7 +38,8 @@ def weapon_filter(up_only, time, pool_number, name):  # 筛选武器活动祈愿
                      ['斫峰之刃', '天空之卷', '西风剑', '西风大剑', '西风长枪', '祭礼残章', '绝弦'],
                      ['阿莫斯之弓', '天空之傲', '祭礼剑', '钟剑', '匣里灭辰', '昭心', '西风猎弓'],
                      ['磐岩结绿', '和璞鸢', '笛剑', '祭礼大剑', '弓藏', '昭心', '西风长枪'],
-                     ['护摩之杖', '狼的末路', '千岩古剑', '千岩长枪', '匣里龙吟', '祭礼弓', '流浪乐章']]
+                     ['护摩之杖', '狼的末路', '千岩古剑', '千岩长枪', '匣里龙吟', '祭礼弓', '流浪乐章'],
+                     ['终末嗟叹之诗', '天空之刃', '暗巷闪光', '暗巷的酒与诗', '西风大剑', '西风猎弓', '匣里灭辰']]
 
     def get_time(text_time):
         w = None
@@ -93,6 +96,17 @@ weapon_B = 0
 weapon_else = 0
 weapon_list = ['磐岩结绿', '和璞鸢']
 
+ch_check =  np.zeros(301, dtype=int)
+we_check =  np.zeros(301, dtype=int)
+cc = np.zeros(291, dtype=int)
+cw = np.zeros(291, dtype=int)
+wc = np.zeros(291, dtype=int)
+ww = np.zeros(291, dtype=int)
+temp_c = 0
+temp_w = 0
+
+
+
 for i in tqdm.tqdm(file_list):  # progressBar
     folder_paths = [base_folder, i]
     folder_path = osp.join(*folder_paths)
@@ -113,10 +127,18 @@ for i in tqdm.tqdm(file_list):  # progressBar
         first_4 = ignore_4_star
         counter_4 = 0
         been_5 = 0  # 四星中间是否有五星
+
+        temp_w = 0
+        temp_c = 0
+
+
         for index, row in data.iterrows():
             all_raw_pull += 1
             counter_4 += 1
             counter_5 += 1
+            temp_c += 1
+            temp_w += 1
+
             this_star = data.iloc[index].values[3]
             if this_star == 4:  # 这次是四星
                 if been_5 and pure_4_star_model:  # 特殊分析时，中间有五星，就略过本次
@@ -144,8 +166,25 @@ for i in tqdm.tqdm(file_list):  # progressBar
                         # 是UP武器
                         star_4_distribution[counter_4][j][0] += 1
                     else:  # 非UP四星武器
+                        if temp_c > 20:
+                            print(processing_file)
+                            print(index)
+                            print(data.iloc[index].values[1])
+                            print("---")
+                        cw[temp_c] += 1
+                        ww[temp_w] += 1
+                        temp_w = 0
                         star_4_distribution[counter_4][j][1] += 1
+
+
+                    temp_w = 0
+
+
                 if data.iloc[index].values[2] == '角色':
+                    ch_check[temp_c] += 1
+                    cc[temp_c] += 1
+                    wc[temp_w] += 1
+                    temp_c = 0
                     star_4_distribution[counter_4][j][2] += 1
                 gacha_time_4 += counter_4  # 记录本次所用抽数
                 counter_4 = 0
@@ -223,47 +262,9 @@ print('其他四星武器')
 need_4 = np.sum(np.sum(star_4_distribution[0:12, 3:4, 1:2], axis=2), axis=1)
 print(*(need_4[1:12]), sep='\t')
 
-
-def plot_5_star_compare_graph(x, weapon_pool):
-    P_5 = np.zeros(91, dtype=float)
-    Expect_distribution_5 = np.zeros(91, dtype=float)
-    state_P = 1
-    expect_pull_time = 0  # 期望抽卡数
-    guarantee_pull = 90  # 一定能抽到
-    max_pull = 0
-    change_point = 72
-    file_text = 'weapon'
-    for i in range(1, 81):  # 专栏模型
-        P_5[i] = 0.007  # 前73发概率
-        if i >= 63:  # 概率增长段
-            P_5[i] = 0.007 + 0.07 * (i - 62)
-        if i >= change_point:  # 概率增长段
-            P_5[i] = P_5[change_point - 1] + 0.035 * (i - change_point + 1)
-        if i == 80:  # 80发保底
-            P_5[i] = 1
-        Expect_distribution_5[i] = state_P * P_5[i]
-        state_P = state_P * (1 - P_5[i])  # 下个状态的概率
-        expect_pull_time += Expect_distribution_5[i] * i
-    # print(*(P_5[60:81]), sep='\t')
-    tot = 0  # 此处用于计算样本概率的无偏估计量
-    for k in range(1, len(x)):
-        tot += k * x[k]
-        if x[k]:
-            max_pull = k
-    data_mean = tot / sum(x)
-
-    plt.plot(range(1, guarantee_pull+1), Expect_distribution_5[1:guarantee_pull+1], label='theory')
-    plt.plot(range(1, guarantee_pull+1), x[1:guarantee_pull+1] / sum(x[1:guarantee_pull+1]),
-             label='actual situation in dataset_02')
-    plt.title(file_text+' 5 star distribution')
-    plt.legend(loc="upper left")
-    plt.text(15, 0.06, '5star sample number:' + str(sum(x[1:guarantee_pull+1])) + '\n' +
-             'theory probability:'+str(round(100/expect_pull_time, 4))+'%' + '\n' +
-             'sample probability:'+str(round(100/data_mean, 4))+'%' + '\n' +
-             'max pull:' + str(max_pull),
-             verticalalignment="top", horizontalalignment="left")  #
-    plt.savefig('plot_graph\\temp_theory_' + file_text + '.png', figsize=(15, 8), dpi=200)
-    plt.show()
-
-print(*need_5, sep='\t')
-plot_5_star_compare_graph(need_5, 1)  # 武器池
+print(*(ch_check[1:201]), sep='\t')
+print("类别分析")
+print(*(cc[1:41]), sep='\t')
+print(*(cw[1:41]), sep='\t')
+print(*(ww[1:41]), sep='\t')
+print(*(wc[1:41]), sep='\t')
