@@ -256,5 +256,5 @@ need_5 = np.sum(np.sum(star_5_distribution[0:91, 1:3, :], axis=2), axis=1)  # �
 plot_5_star_compare_graph(need_5, 0)  # 标准池和角色池
 need_5 = np.sum(np.sum(star_5_distribution[0:91, 3:4, :], axis=2), axis=1)  # 选取武器池
 # print('武器池五星数量'+str(need_5.sum()))
-# print(*(need_5[1:81]), sep='\t')
+# print(*(need_5[1:91]), sep='\t')
 plot_5_star_compare_graph(need_5, 1)  # 武器池
