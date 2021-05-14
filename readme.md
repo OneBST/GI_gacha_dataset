@@ -8,7 +8,7 @@
 
 [另一种electron版的抽卡记录导出工具](https://github.com/biuuu/genshin-gacha-export/releases) from lvlvl
 
-目前数据集中有206010条抽卡记录
+目前数据集中有202971条抽卡记录
 
 
 
@@ -39,7 +39,6 @@ dataset_02文件夹中文件从0001开始顺序编号
 > - gacha200.csv  记录常驻祈愿抽卡数据
 > - gacha301.csv  记录角色活动祈愿数据
 > - gacha302.csv  记录武器活动祈愿数据
-> 
 
 csv文件内数据记录格式如下
 | 抽卡时间 | 名称 | 类别 | 星级 |

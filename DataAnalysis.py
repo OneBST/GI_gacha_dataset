@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import numpy as npx
+import numpy as np
 import os.path as osp
 import datetime
 import tqdm
