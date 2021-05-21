@@ -124,6 +124,7 @@ for i in tqdm.tqdm(file_list):  # progressBar
                         continue
                 if counter_4 >= 12:  # 极低概率事件
                     print(i)
+                    print(counter_4)
                     print('四星间隔超出12，需要检查')
                 if data.iloc[index].values[2] == '武器':
                     star_4_distribution[counter_4][j][2] += 1
