@@ -122,6 +122,8 @@ for i in tqdm.tqdm(file_list):  # progressBar
                     if check_select_mark == 0:
                         counter_4 = 0
                         continue
+                if counter_4 >= 11:  # 小概率事件
+                    print(i + ' ' + file_name + ' ' + str(index) + ' 四星间隔为11')
                 if counter_4 >= 12:  # 极低概率事件
                     print(i)
                     print(counter_4)
