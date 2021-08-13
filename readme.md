@@ -6,7 +6,7 @@
 
 ![img](https://i0.hdslb.com/bfs/article/79b1ebd78b06fae651ad57452227cea8f80bd9e6.png@942w_263h_progressive.webp)
 
-$$PD=0.006\cdot0.994^{x-1}\quad PC=1-0.994^x$$
+<img src="https://latex.codecogs.com/svg.image?PD=0.006\cdot0.994^{x-1}\quad&space;PC=1-0.994^x" title="PD=0.006\cdot0.994^{x-1}\quad PC=1-0.994^x" />
 
 模型五星综合概率为**1.6052%**，期望**62.297抽**，概率在**第74抽**开始上升。
 
@@ -22,7 +22,7 @@ $$PD=0.006\cdot0.994^{x-1}\quad PC=1-0.994^x$$
 
 ![img](https://i0.hdslb.com/bfs/article/a335c9c987e43f25122cc880dc512e564b87d03c.png@942w_240h_progressive.webp)
 
-$$PD=0.007\cdot0.993^{x-1}\quad PC=1-0.993^x$$
+<img src="https://latex.codecogs.com/svg.image?PD=0.007\cdot0.993^{x-1}\quad&space;PC=1-0.993^x" title="PD=0.007\cdot0.993^{x-1}\quad PC=1-0.993^x" />
 
 模型五星综合概率为**1.8779%**，期望**53.250抽**，概率在**第63抽**开始上升。
 
