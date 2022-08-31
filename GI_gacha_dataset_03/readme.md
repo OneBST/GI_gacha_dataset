@@ -25,3 +25,5 @@
 `ScanTool.py`用于扫描数据，其中可设置扫描内容和过滤数据方式。默认忽略每个账号第一个五星和最后100抽
 
 `read_json.py`用于读取`ScanTool.py`产生的json记录
+
+`genshin_cost_estimate.py`用于从抽数估计花费金额
